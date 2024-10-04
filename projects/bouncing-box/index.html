@@ -85,11 +85,16 @@
 			turn it around! 
 			*/
 			function update() {
-				if (misclicks > 10) {
-					box.css("visibility", 'hidden');
+				if (misclicks > 10) {					
+					box.css('visibility', 'hidden');					
+					endGame();
 					alert("Game Over!")
+					
+					
+				} else {
+					box.css("visibility", 'visible');
 				}
-				box.css("visibility", 'visible');
+				
 				if (positionX + 70 > boardWidth ) {
 					speedX *= -1;
 				}
