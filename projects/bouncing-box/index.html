@@ -126,8 +126,7 @@
 				positionY = Math.floor(Math.random() * 3 * boardHeight / 4);
 				points += 1;
 				changeBoxText(points);
-				increaseSpeed(speedX,5);
-				increaseSpeed(speedY,3);
+				increaseSpeed();
 				board.css('background',getRandomColor());
 			};
 
@@ -136,11 +135,16 @@
 			}
 
 			//ppf: pixels per frame
-			function increaseSpeed(speed,ppf) {
-				if (speed < 0) {
-					speed -= ppf;
+			function increaseSpeed() {
+				if (speedX < 0) {
+					speedX -= 3;
 				} else {
-					speed += ppf;
+					speedX += 3;
+				}
+				if (speedY < 0) {
+					speedY -= 1;
+				} else {
+					speedY += 1;
 				}
 			};
 
