@@ -15,9 +15,9 @@
 			user-select: none;
 			display: block;
 			position: absolute;
-			top: 100px;
-			/* Change me! */
-			left: 0px;
+			visibility: hidden;
+			
+	
 		}
 
 		.board {
@@ -44,16 +44,21 @@
 			var box = jQuery('.box');	// reference to the HTML .box element
 			var board = jQuery('.board');	// reference to the HTML .board element
 			var boardWidth = board.width();	// the maximum X-Coordinate of the screen
-
+			var boardHeight = board.height();	// the maximum Y-Coordinate of the screen
+			board.css('background',getRandomColor()); //sets random background color
 			// Every 50 milliseconds, call the update Function (see below)
-			setInterval(update, 50);
+			var interval = setInterval(update, 50);
 
 			// Every time the box is clicked, call the handleBoxClick Function (see below)
 			box.on('click', handleBoxClick);
 
+			// Every time the box is missed, call the handleMisclicks Function (see below)
+			board.on('click', handleMisclicks);
+
 			// moves the Box to a new position on the screen along the X-Axis
-			function moveBoxTo(newPositionX) {
+			function moveBoxTo(newPositionX, newPositionY) {
 				box.css("left", newPositionX);
+				box.css("top", newPositionY);
 			}
 
 			// changes the text displayed on the Box
@@ -67,6 +72,11 @@
 
 			// TODO 2 - Variable declarations 
 			var positionX = 0;
+			var positionY =  0;
+			var speedX = 10;
+			var speedY = 5;
+			var points = 0;
+			var misclicks = 0;
 
 
 			/* 
@@ -75,10 +85,26 @@
 			turn it around! 
 			*/
 			function update() {
-				// Increase position by 10
-				positionX = positionX + 10;
-				moveBoxTo(positionX);
-
+				if (misclicks > 10) {
+					box.css("visibility", 'hidden');
+					board.text("Game Over!")
+				}
+				box.css("visibility", 'visible');
+				if (positionX + 70 > boardWidth ) {
+					speedX *= -1;
+				}
+				if (positionX < 0 ) {
+					speedX *= -1;
+				}
+				if (positionY + 70 > boardHeight ) {
+					speedY *= -1;
+				}
+				if (positionY < 0 ) {
+					speedY *= -1;
+				}
+				positionX = positionX + speedX;
+				positionY = positionY + speedY;
+				moveBoxTo(positionX, positionY);
 			};
 
 			/* 
@@ -87,10 +113,39 @@
 			the left side of the screen.
 			*/
 			function handleBoxClick() {
-
-
+				positionX = Math.floor(Math.random() * 3 * boardWidth / 4);
+				positionY = Math.floor(Math.random() * 3 * boardHeight / 4);
+				points += 1;
+				changeBoxText(points);
+				increaseSpeed(speedX,3);
+				increaseSpeed(speedY,1);
+				board.css('background',getRandomColor());
 			};
 
+			function handleMisclicks() {
+				misclicks += 1;
+			}
+
+			//ppf: pixels per frame
+			function increaseSpeed(speed,ppf) {
+				if (speed < 0) {
+					speed -= ppf;
+				} else {
+					speed += ppf;
+				}
+			};
+
+			function getRandomColor() {
+				var randomRed = Math.random() * 255;
+				var randomGreen = Math.random() * 255;
+				var randomBlue = Math.random() * 255;
+				var colorStr = "rgb("+ randomRed +", "+ randomGreen +", "+ randomBlue +")"
+				return colorStr;
+			}
+
+			function endGame() {
+				clearInterval(interval);
+			}
 
 
 
